@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+
+    <group name="General">
+        <entry name="titleFormat" type="String">
+            <label>Panel text while a window is active (%a = app name, %w = window title, %q = activity)</label>
+            <default>%a</default>
+        </entry>
+        <entry name="sameFormat" type="String">
+            <label>Panel text when the app name and window title are the same</label>
+            <default>%a</default>
+        </entry>
+        <entry name="emptyFormat" type="String">
+            <label>Panel text when no window is active</label>
+            <default>%q</default>
+        </entry>
+        <entry name="showIcon" type="Bool">
+            <label>Show the window's icon in the panel</label>
+            <default>true</default>
+        </entry>
+        <entry name="iconSize" type="Int">
+            <label>Panel icon size in pixels (0 = automatic)</label>
+            <default>0</default>
+        </entry>
+        <entry name="maxWidth" type="Int">
+            <label>Maximum panel text width in pixels, longer text is cut with … (0 = no limit)</label>
+            <default>0</default>
+        </entry>
+        <entry name="onlyMaximized" type="Bool">
+            <label>Only show maximized windows</label>
+            <default>false</default>
+        </entry>
+        <entry name="filterByScreen" type="Bool">
+            <label>Only show windows on the panel's screen</label>
+            <default>false</default>
+        </entry>
+        <entry name="middleClickClose" type="Bool">
+            <label>Middle-click closes the active window</label>
+            <default>true</default>
+        </entry>
+        <entry name="doubleClickMaximize" type="Bool">
+            <label>Double-click maximizes or restores the active window</label>
+            <default>true</default>
+        </entry>
+        <entry name="scrollSwitch" type="Bool">
+            <label>Scrolling switches between windows</label>
+            <default>true</default>
+        </entry>
+        <entry name="panelFontFamily" type="String">
+            <label>Font family for the panel text (empty = theme font)</label>
+            <default></default>
+        </entry>
+        <entry name="panelFontSize" type="Double">
+            <label>Font size in points for the panel text (0 = automatic)</label>
+            <default>0</default>
+        </entry>
+        <entry name="panelFontWeight" type="Int">
+            <label>Font weight for the panel text (100 = thin ... 900 = black)</label>
+            <default>700</default>
+        </entry>
+        <entry name="panelFontItalic" type="Bool">
+            <label>Italic panel text</label>
+            <default>false</default>
+        </entry>
+    </group>
+</kcfg>

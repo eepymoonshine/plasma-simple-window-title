@@ -1,0 +1,21 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "kodehawa"
+            }
+        ],
+        "BugReportUrl": "https://github.com/eepymoonshine/plasma-simple-window-title/issues",
+        "Category": "Windows and Tasks",
+        "Description": "The active window's icon and title in your panel, with window actions and a window switcher popup.",
+        "EnabledByDefault": true,
+        "Icon": "preferences-system-windows",
+        "Id": "com.github.eepymoonshine.simplewindowtitle",
+        "License": "GPL-3.0-or-later",
+        "Name": "Simple Window Title",
+        "Version": "1.0",
+        "Website": "https://github.com/eepymoonshine/plasma-simple-window-title"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

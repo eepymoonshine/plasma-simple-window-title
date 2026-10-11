@@ -99,10 +99,34 @@ PlasmoidItem {
             .trim()
     }
 
-    readonly property string text: activeTask
+    readonly property string liveText: activeTask
         ? fill(activeTask.appName === activeTask.title ? (cfg.sameFormat || "%a") : (cfg.titleFormat || "%a"))
         : fill(cfg.emptyFormat !== undefined ? cfg.emptyFormat : "%q")
-    readonly property var icon: activeTask ? activeTask.icon : (currentActivity.icon || "preferences-system-windows")
+    readonly property var liveIcon: activeTask ? activeTask.icon : (currentActivity.icon || "preferences-system-windows")
+
+    // What the panel shows. Follows windows right away, but waits a moment before the empty state:
+    // closing a window leaves none active until the next one takes focus, which would flash it
+    property string text: liveText
+    property var icon: liveIcon
+    function updateShown() {
+        if (activeTask) {
+            emptyTimer.stop()
+            text = liveText
+            icon = liveIcon
+        } else {
+            emptyTimer.restart()
+        }
+    }
+    onLiveTextChanged: updateShown()
+    onLiveIconChanged: updateShown()
+    Timer {
+        id: emptyTimer
+        interval: 100
+        onTriggered: {
+            root.text = root.liveText
+            root.icon = root.liveIcon
+        }
+    }
 
     // Window actions
 
@@ -147,6 +171,8 @@ PlasmoidItem {
 
     compactRepresentation: CompactView {}
     fullRepresentation: FullView {}
+    // Build the popup up front so the first open doesn't wait on it
+    preloadFullRepresentation: true
 
     Plasmoid.icon: "preferences-system-windows"
     toolTipMainText: activeTask ? activeTask.appName : i18n("No active window")

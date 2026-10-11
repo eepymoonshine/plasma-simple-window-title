@@ -33,20 +33,24 @@ Item {
         id: mouseArea
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+
+        // Pressing outside the popup closes it before the click lands, so remember the state from the press
+        property bool wasExpanded: false
+        onPressed: function(mouse) { if (mouse.button === Qt.LeftButton) wasExpanded = root.expanded }
         onClicked: function(mouse) {
             if (mouse.button === Qt.MiddleButton) {
                 if (root.activeTask && Plasmoid.configuration.middleClickClose !== false) root.close(root.activeTask)
-            } else if (Plasmoid.configuration.doubleClickMaximize !== false) {
-                // Wait to see if it's a double-click, so that doesn't also open the popup
-                clickTimer.restart()
             } else {
-                root.expanded = !root.expanded
+                // Open right away; a double-click closes it again below
+                root.expanded = !wasExpanded
             }
         }
         onDoubleClicked: function(mouse) {
             if (mouse.button !== Qt.LeftButton || Plasmoid.configuration.doubleClickMaximize === false) return
-            clickTimer.stop()
-            if (root.activeTask) root.toggleMaximized(root.activeTask)
+            // Grab the window first, it stops counting as active once the popup closes
+            var task = root.activeTask
+            root.expanded = false
+            if (task) root.toggleMaximized(task)
         }
 
         // Scroll to switch windows. Touchpads send many small steps, so take one per pause
@@ -60,12 +64,6 @@ Item {
             root.cycle(delta < 0 ? 1 : -1)
         }
         Timer { id: wheelTimer; interval: 200; onTriggered: mouseArea.wheelBlocked = false }
-    }
-
-    Timer {
-        id: clickTimer
-        interval: Qt.styleHints.mouseDoubleClickInterval
-        onTriggered: root.expanded = !root.expanded
     }
 
     GridLayout {

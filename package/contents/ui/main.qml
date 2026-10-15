@@ -13,9 +13,6 @@ import org.kde.kirigami as Kirigami
 PlasmoidItem {
     id: root
 
-    // Half the theme's card rounding
-    readonly property real cardRadius: Math.max(2, Math.round(Kirigami.Units.cornerRadius / 2))
-
     readonly property var cfg: Plasmoid.configuration
 
     // Windows on this desktop and activity (and screen, if set)
@@ -164,8 +161,6 @@ PlasmoidItem {
     function showOverview() {
         launcher.connectSource("qdbus6 org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut Overview")
     }
-
-    readonly property color accent: "#9C87F5"
 
     readonly property bool isVertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
 

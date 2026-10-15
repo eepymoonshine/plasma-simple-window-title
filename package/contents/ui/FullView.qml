@@ -7,22 +7,22 @@ import QtQuick.Layouts
 import QtQuick.Controls as QQC2
 import org.kde.plasma.plasmoid
 import org.kde.plasma.components as PlasmaComponents
+import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg as KSvg
 
-Item {
+PlasmaExtras.Representation {
     id: full
-    clip: true
 
-    readonly property color cardColor: Qt.alpha(Kirigami.Theme.textColor, 0.07)
     readonly property Item task: root.lastTask   // the window the actions apply to
 
     Layout.minimumWidth: Kirigami.Units.gridUnit * 19
     Layout.preferredWidth: Kirigami.Units.gridUnit * 19
     // Fit the content exactly, or Plasma's saved popup size can leave a gap at the bottom
-    readonly property real contentHeight: mainColumn.implicitHeight + Kirigami.Units.smallSpacing * 2
-    Layout.minimumHeight: contentHeight
-    Layout.preferredHeight: contentHeight
-    Layout.maximumHeight: contentHeight
+    Layout.minimumHeight: implicitHeight
+    Layout.preferredHeight: implicitHeight
+    Layout.maximumHeight: implicitHeight
+    spacing: Kirigami.Units.smallSpacing
 
     // Building blocks
 
@@ -34,11 +34,11 @@ Item {
         opacity: 0.55
     }
 
-    component Card: Rectangle {
+    component Card: KSvg.FrameSvgItem {
         default property alias content: inner.data
         Layout.fillWidth: true
-        radius: root.cardRadius
-        color: full.cardColor
+        imagePath: "widgets/frame"
+        prefix: "plain"
         implicitHeight: inner.implicitHeight + Kirigami.Units.mediumSpacing * 2
 
         ColumnLayout {
@@ -49,19 +49,18 @@ Item {
         }
     }
 
-    component Chip: Rectangle {
+    component Chip: KSvg.FrameSvgItem {
         property alias text: chipLabel.text
-        property color tint: root.accent
         Layout.preferredWidth: chipLabel.implicitWidth + Kirigami.Units.largeSpacing
         Layout.preferredHeight: chipLabel.implicitHeight + Kirigami.Units.smallSpacing
-        radius: height / 2
-        color: Qt.alpha(tint, 0.18)
+        imagePath: "widgets/viewitem"
+        prefix: "selected"
 
         PlasmaComponents.Label {
             id: chipLabel
             anchors.centerIn: parent
             font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-            font.bold: true; color: parent.tint
+            font.bold: true
         }
     }
 
@@ -77,18 +76,8 @@ Item {
 
     // Layout
 
-    ColumnLayout {
-        id: mainColumn
-        anchors.fill: parent
-        anchors.topMargin: Kirigami.Units.smallSpacing
-        anchors.bottomMargin: Kirigami.Units.smallSpacing
-        anchors.leftMargin: Kirigami.Units.mediumSpacing
-        anchors.rightMargin: Kirigami.Units.mediumSpacing
-        spacing: Kirigami.Units.smallSpacing
-
-        // Header
-        RowLayout {
-            Layout.fillWidth: true
+    header: PlasmaExtras.PlasmoidHeading {
+        contentItem: RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
             Kirigami.Icon {
@@ -96,14 +85,17 @@ Item {
                 Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
                 Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
             }
-            PlasmaComponents.Label {
+            Kirigami.Heading {
+                level: 1
                 text: i18n("Windows")
-                font.bold: true
-                font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.25
             }
             Item { Layout.fillWidth: true }
             Chip { text: i18np("%1 open", "%1 open", windowList.count) }
         }
+    }
+
+    contentItem: ColumnLayout {
+        spacing: Kirigami.Units.smallSpacing
 
         // The current window
         Card {
@@ -146,9 +138,9 @@ Item {
                         visible: full.task && (full.task.isMaximized || full.task.isMinimized || full.task.isKeepAbove || full.task.isOnAllDesktops)
                         spacing: Kirigami.Units.smallSpacing
                         Chip { visible: full.task && full.task.isMaximized; text: i18n("Maximized") }
-                        Chip { visible: full.task && full.task.isMinimized; text: i18n("Minimized"); tint: Kirigami.Theme.disabledTextColor }
-                        Chip { visible: full.task && full.task.isKeepAbove; text: i18n("On top"); tint: "#E8A33D" }
-                        Chip { visible: full.task && full.task.isOnAllDesktops; text: i18n("All desktops"); tint: "#6A9BCC" }
+                        Chip { visible: full.task && full.task.isMinimized; text: i18n("Minimized"); opacity: 0.6 }
+                        Chip { visible: full.task && full.task.isKeepAbove; text: i18n("On top") }
+                        Chip { visible: full.task && full.task.isOnAllDesktops; text: i18n("All desktops") }
                     }
                 }
             }
@@ -231,12 +223,11 @@ Item {
                     width: windowList.width
                     height: full.rowHeight
 
-                    Rectangle {
+                    PlasmaExtras.Highlight {
                         anchors.fill: parent
-                        radius: root.cardRadius
-                        color: entry.isActive ? Qt.alpha(root.accent, 0.2)
-                            : entryMouse.containsMouse ? Qt.alpha(Kirigami.Theme.textColor, 0.08)
-                            : "transparent"
+                        hovered: true
+                        visible: opacity > 0
+                        opacity: entry.isActive ? 1 : entryMouse.containsMouse ? 0.5 : 0
                     }
 
                     MouseArea {
@@ -299,10 +290,10 @@ Item {
                 }
             }
         }
+    }
 
-        // Footer
-        RowLayout {
-            Layout.fillWidth: true
+    footer: PlasmaExtras.PlasmoidHeading {
+        contentItem: RowLayout {
             spacing: Kirigami.Units.smallSpacing
 
             PlasmaComponents.Label {
